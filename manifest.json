@@ -23,7 +23,7 @@
   },
   "content_scripts": [
     {
-      "js": [ "src/interface.js" ],
+      "js": [ "src/interface.js", "src/flips.js"],
       "matches": [
         "https://www.crosserville.com/builder"
       ],

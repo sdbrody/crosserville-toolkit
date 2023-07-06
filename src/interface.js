@@ -1,20 +1,28 @@
-function insertToolbar(ext_base_url /* to be used for resources */) {
-    function toolbarFocus() {
-        const activeTabs = document.getElementsByClassName("activeTab");
-        for (let i = 0; i < activeTabs.length; i++) {
-            activeTabs.item(i).classList.remove("activeTab");
-        }
-        const activePanes = document.getElementsByClassName("activePane");
-        for (let i = 0; i < activePanes.length; i++) {
-            activePanes.item(i).classList.remove("activePane");
-        }
+function toolbarFocus() {
+    const activeTabs = document.getElementsByClassName("activeTab");
+    for (let i = 0; i < activeTabs.length; i++) {
+        activeTabs.item(i).classList.remove("activeTab");
     }
-
-    function toolbarUnfocus() {
-        const tb_tab = document.getElementById("id_toolbox_tab");
-        if (tb_tab) { tb_tab.classList.remove("activeTab"); }
+    document.getElementById("id_toolbox_tab").classList.add("activeTab");
+    const activePanes = document.getElementsByClassName("activePane");
+    for (let i = 0; i < activePanes.length; i++) {
+        activePanes.item(i).classList.remove("activePane");
     }
+    document.getElementById("id_toolbox_pane").classList.add("activePane");
+}
 
+function toolbarUnfocus() {
+    const tb_tab = document.getElementById("id_toolbox_tab");
+    if (tb_tab) {
+        tb_tab.classList.remove("activeTab");
+    }
+    const tb_pane = document.getElementById("id_toolbox_pane");
+    if (tb_pane) {
+        tb_pane.classList.remove("activePane");
+    }
+}
+
+function insertToolbar(ext_base_url /* to be used for resources */ ) {
     let control_tabs = document.getElementById("id_gridControlTabs");
     control_tabs.childNodes.forEach(function(c) {
         c.addEventListener("click", toolbarUnfocus);
@@ -34,10 +42,24 @@ function insertToolbar(ext_base_url /* to be used for resources */) {
     toolbox_tab.addEventListener("click", toolbarFocus);
     toolbox_li.appendChild(toolbox_tab);
     control_tabs.appendChild(toolbox_li);
+    
+    const toolbox_div = document.createElement("div");
+    toolbox_div.classList.add("gridControlPane");
+    toolbox_div.id = "id_toolbox_pane";
+    
+    fetch(ext_base_url + "res/pane.html")
+        .then(response => response.text())
+        .then(data => {
+            toolbox_div.innerHTML = data;
+            document.getElementsByClassName("gridControlPaneWrapper").item(0).appendChild(toolbox_div);
+        }).catch(err => {
+            // handle error
+        });
 }
 
 function removeToolbar() {
     document.getElementById("id_toolbox_tab").remove();
+    document.getElementById("id_toolbox_pane").remove();
 }
 
 window.interface_installed = 1;

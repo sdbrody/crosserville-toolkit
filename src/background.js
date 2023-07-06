@@ -21,7 +21,7 @@ chrome.action.onClicked.addListener(async (tab) => {
         if (!injectionResults[0].result) {
             chrome.scripting.executeScript({
                 target: { tabId: tab.id },
-                files: ["src/interface.js"],
+                files: ["src/interface.js", "src/flips.js"],
                 world: "MAIN"
             }).then(() => console.log("interface installed"));
         }        
