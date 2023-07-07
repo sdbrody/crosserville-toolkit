@@ -10,7 +10,7 @@ var flipTB = function() {
   grid = new Array(puzzle.size.width * puzzle.size.height);
   for (let irow = 0; irow < puzzle.size.height; irow++)
       for (let icol = 0; icol < puzzle.size.width; icol++)
-          grid[(puzzle.size.width - irow - 1) * puzzle.size.width + icol] = puzzle.grid[irow][icol].isBlock ? '.' : puzzle.grid[irow][icol].char;
+          grid[(puzzle.size.height - irow - 1) * puzzle.size.width + icol] = puzzle.grid[irow][icol].isBlock ? '.' : puzzle.grid[irow][icol].char;
   puzzle.createGrid(grid);
 }
 

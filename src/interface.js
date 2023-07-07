@@ -8,6 +8,12 @@ function toolbarFocus() {
     for (let i = 0; i < activePanes.length; i++) {
         activePanes.item(i).classList.remove("activePane");
     }
+    const square_only_buttons = document.getElementsByClassName("button square_only");
+    let disable = !isSquare(puzzle);
+    for (let i = 0; i < square_only_buttons.length; ++i) {
+        square_only_buttons.item(i).disabled = disable;
+    }
+
     document.getElementById("id_toolbox_pane").classList.add("activePane");
 }
 
@@ -22,11 +28,26 @@ function toolbarUnfocus() {
     }
 }
 
-function insertToolbar(ext_base_url /* to be used for resources */ ) {
-    let control_tabs = document.getElementById("id_gridControlTabs");
-    control_tabs.childNodes.forEach(function(c) {
-        c.addEventListener("click", toolbarUnfocus);
+function checkForActive(mutationList) {
+    mutationList.forEach((mutation) => {
+        if (mutation.type === "attributes" && mutation.attributeName === "class" && mutation.target.classList.contains("activeTab")) {
+            toolbarUnfocus();
+            return;
+        }
     });
+}
+
+var tab_observers = [];
+
+function insertToolbar(ext_base_url /* to be used for resources */ ) {
+    let control_tabs_parent = document.getElementById("id_gridControlTabs");
+    let control_tabs = control_tabs_parent.children;
+    for (let i = 0; i < control_tabs.length; ++i) {
+        var observer = new MutationObserver(checkForActive);
+        // children are list items containing a single div for the tab.
+        observer.observe(control_tabs[i].firstElementChild, {attributes: true});
+        tab_observers.push(observer);
+    };
 
     const toolbox_li = document.createElement("li");
     const toolbox_tab = document.createElement("div");
@@ -39,7 +60,7 @@ function insertToolbar(ext_base_url /* to be used for resources */ ) {
         </svg>Toolbox`;
     toolbox_tab.addEventListener("click", toolbarFocus);
     toolbox_li.appendChild(toolbox_tab);
-    control_tabs.appendChild(toolbox_li);
+    control_tabs_parent.appendChild(toolbox_li);
     
     const toolbox_div = document.createElement("div");
     toolbox_div.classList.add("gridControlPane");
@@ -58,6 +79,9 @@ function insertToolbar(ext_base_url /* to be used for resources */ ) {
 function removeToolbar() {
     document.getElementById("id_toolbox_tab").remove();
     document.getElementById("id_toolbox_pane").remove();
+    tab_observers.forEach(function(ob) { ob.disconnect(); });
+    // clear the array
+    tab_observers.length = 0; 
 }
 
 // Flag to indicate scripts have been installed.
