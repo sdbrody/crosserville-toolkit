@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Crosserville Toolkit Extension",
   "description": "Base Level Extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "icons": {
     "16": "res/icon-16.png",
     "32": "res/icon-32.png",
@@ -12,7 +12,10 @@
   "background": {
     "service_worker": "src/background.js"
   },
-  "permissions": ["activeTab", "scripting"],
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
   "action": {
     "default_icon": {
       "16": "res/icon-16.png",
@@ -23,7 +26,10 @@
   },
   "content_scripts": [
     {
-      "js": [ "src/interface.js", "src/flips.js"],
+      "js": [
+        "src/interface.js",
+        "src/flips.js"
+      ],
       "matches": [
         "https://www.crosserville.com/builder"
       ],
@@ -32,8 +38,12 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": [ "res/*.*" ],
-      "matches": [ "https://www.crosserville.com/*" ]
+      "resources": [
+        "res/*.*"
+      ],
+      "matches": [
+        "https://www.crosserville.com/*"
+      ]
     }
   ]
 }
