@@ -16,7 +16,7 @@ Upon clicking on the extension icon, a new 'Toolbox' tab is added to the Crosser
 
 ## Installation
 
-The extension is currently pending review, and will then be available on the Chrome Webstore.
+The extension is available on the Chrome Webstore [here](https://chrome.google.com/webstore/detail/crosserville-toolkit-exte/lkdmhfbidanmcfienlmnidofkbihnjkl).
 
 You can also install it directly from this source, by following these steps:
 - Click the green '<> Code' button, and choose 'Download ZIP' from the bottom of the 'Local' tab.
