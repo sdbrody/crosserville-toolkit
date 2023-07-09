@@ -50,6 +50,7 @@ function insertToolbar(ext_base_url /* to be used for resources */ ) {
     };
 
     const toolbox_li = document.createElement("li");
+    toolbox_li.id = "id_toolbox_li";
     const toolbox_tab = document.createElement("div");
     toolbox_tab.id = "id_toolbox_tab";
     toolbox_tab.classList.add("tab");
@@ -77,7 +78,7 @@ function insertToolbar(ext_base_url /* to be used for resources */ ) {
 }
 
 function removeToolbar() {
-    document.getElementById("id_toolbox_tab").remove();
+    document.getElementById("id_toolbox_li").remove();
     document.getElementById("id_toolbox_pane").remove();
     tab_observers.forEach(function(ob) { ob.disconnect(); });
     // clear the array
