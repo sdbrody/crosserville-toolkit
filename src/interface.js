@@ -1,17 +1,16 @@
 function toolbarFocus() {
-    const activeTabs = document.getElementsByClassName("activeTab");
-    for (let i = 0; i < activeTabs.length; i++) {
-        activeTabs.item(i).classList.remove("activeTab");
+    for (var activeTab of document.getElementsByClassName("activeTab")) {
+        activeTab.classList.remove("activeTab");
     }
     document.getElementById("id_toolbox_tab").classList.add("activeTab");
-    const activePanes = document.getElementsByClassName("activePane");
-    for (let i = 0; i < activePanes.length; i++) {
-        activePanes.item(i).classList.remove("activePane");
+    
+    for (var activePane of document.getElementsByClassName("activePane")) {
+        activePane.classList.remove("activePane");
     }
-    const square_only_buttons = document.getElementsByClassName("button square_only");
+
     let disable = !isSquare(puzzle);
-    for (let i = 0; i < square_only_buttons.length; ++i) {
-        square_only_buttons.item(i).disabled = disable;
+    for (var square_only_button of document.getElementsByClassName("button square_only")){
+        square_only_button.disabled = disable;
     }
 
     document.getElementById("id_toolbox_pane").classList.add("activePane");
