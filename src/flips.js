@@ -2,7 +2,7 @@
 // returns a 2D array of 'height' rows x 'width' columns
 // use arr.flat() to convert to 1D
 function array2D(height, width) {
-  return Array.from(Array(height), () => new Array(width));
+  return Array.from(Array(height), () => new Array(width).fill('.'));
 }
 
 // convenience function: sets the grid cell indicated by 'point'
@@ -63,27 +63,23 @@ function rotate270() {
 }
 
 function flipAcross() {
-  grid = new Array(puzzle.size.width * puzzle.size.height);
-  grid.fill('.');
-  for (let i = 0; i < puzzle.acrossWords.length; ++i) {
-    let entry = puzzle.acrossWords[i];
+  grid = new array2D(puzzle.size.height, puzzle.size.width);
+  for (var entry of puzzle.acrossWords) {
     for (let j = 0; j < entry.length; ++j) {
-      grid[(entry.rowNum * puzzle.size.width) + entry.startColNum + j] = puzzle.grid[entry.rowNum][entry.startColNum + entry.length - j - 1].char;
+      set2D(grid, [entry.rowNum, entry.startColNum + entry.length - j - 1], puzzle.grid[entry.rowNum][entry.startColNum + j].char);
     }
   }
-  puzzle.createGrid(grid);
+  puzzle.createGrid(grid.flat());
 }
 
 function flipDown() {
-  grid = new Array(puzzle.size.width * puzzle.size.height);
-  grid.fill('.');
-  for (let i = 0; i < puzzle.downWords.length; ++i) {
-    let entry = puzzle.downWords[i];
+  grid = new array2D(puzzle.size.height, puzzle.size.width);
+  for (var entry of puzzle.downWords) {
     for (let j = 0; j < entry.length; ++j) {
-      grid[(entry.startRowNum + j) * puzzle.size.width + entry.colNum] = puzzle.grid[entry.startRowNum + entry.length - j -1][entry.colNum].char;
+      set2D(grid, [entry.startRowNum + entry.length - j - 1, entry.colNum], puzzle.grid[entry.startRowNum + j][entry.colNum].char);
     }
   }
-  puzzle.createGrid(grid);
+  puzzle.createGrid(grid.flat());
 }
 
 const FLIP_FNS = new Map([
