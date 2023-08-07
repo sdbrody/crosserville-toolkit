@@ -1,56 +1,68 @@
-var flipLR  = function() {
-  grid = new Array(puzzle.size.width * puzzle.size.height);
-  for (let irow = 0; irow < puzzle.size.height; irow++)
-      for (let icol = 0; icol < puzzle.size.width; icol++)
-          grid[irow * puzzle.size.width + (puzzle.size.width - icol - 1)] = puzzle.grid[irow][icol].isBlock ? '.' : puzzle.grid[irow][icol].char;
-  puzzle.createGrid(grid);
+
+// returns a 2D array of 'height' rows x 'width' columns
+// use arr.flat() to convert to 1D
+function array2D(height, width) {
+  return Array.from(Array(height), () => new Array(width));
 }
 
-var flipTB = function() {
-  grid = new Array(puzzle.size.width * puzzle.size.height);
-  for (let irow = 0; irow < puzzle.size.height; irow++)
-      for (let icol = 0; icol < puzzle.size.width; icol++)
-          grid[(puzzle.size.height - irow - 1) * puzzle.size.width + icol] = puzzle.grid[irow][icol].isBlock ? '.' : puzzle.grid[irow][icol].char;
-  puzzle.createGrid(grid);
+// convenience function: sets the grid cell indicated by 'point'
+// (an array of [r, c]) to the value 'val'
+function set2D(grid, point, val) {
+  grid[point[0]][point[1]] = val
 }
 
-var isSquare = function(puzzle) {
+// maps the values in the current puzzle grid to 'grid' using the given 'mappingFn'.
+// 'mappingFn' must be a 2-argument function that accepts row and column indexes, and
+// returns the corresponding coordinates in the grid in the form of an array [new_row, new_col].
+function mapGrid(grid, mappingFn) {
+  for (let r = 0; r < puzzle.size.height; ++r)
+      for (let c = 0; c < puzzle.size.width; ++c)
+        set2D(grid, mappingFn(r, c), puzzle.grid[r][c].isBlock ? '.' : puzzle.grid[r][c].char)  
+}
+
+function flipLR() {
+  grid = array2D(puzzle.size.height, puzzle.size.width);
+  mapGrid(grid, (r, c) => [r, puzzle.size.width - c - 1]);
+  puzzle.createGrid(grid.flat());
+}
+
+function flipTB() {
+  grid = array2D(puzzle.size.height, puzzle.size.width);
+  mapGrid(grid, (r, c) => [puzzle.size.height - r - 1, c]);
+  puzzle.createGrid(grid.flat());
+}
+
+function isSquare(puzzle) {
   return puzzle.size.width == puzzle.size.height;
 }
 
-var flipD2 = function() {
+function flipD2() {
   if (!isSquare(puzzle)) return "puzzle is not square!";
-  grid = new Array(puzzle.size.width * puzzle.size.height);
-  for (let irow = 0; irow < puzzle.size.height; irow++)
-      for (let icol = 0; icol < puzzle.size.width; icol++)
-          grid[icol * puzzle.size.width + irow] = puzzle.grid[irow][icol].isBlock ? '.' : puzzle.grid[irow][icol].char;
-  puzzle.createGrid(grid);
+  grid = array2D(puzzle.size.height, puzzle.size.width);
+  mapGrid(grid, (r, c) => [c, r]);
+  puzzle.createGrid(grid.flat());
 }
 
-var flipD1 = function() {
+function flipD1() {
   if (!isSquare(puzzle)) return "puzzle is not square!";
-  grid = new Array(puzzle.size.width * puzzle.size.height);
-  for (let irow = 0; irow < puzzle.size.height; irow++)
-      for (let icol = 0; icol < puzzle.size.width; icol++)
-          grid[(puzzle.size.width - icol - 1) * puzzle.size.width + (puzzle.size.height - irow - 1)] = puzzle.grid[irow][icol].isBlock ? '.' : puzzle.grid[irow][icol].char;
-  puzzle.createGrid(grid);
+  grid = array2D(puzzle.size.height, puzzle.size.width);
+  mapGrid(grid, (r, c) => [puzzle.size.width - c - 1, puzzle.size.height - r - 1]);
+  puzzle.createGrid(grid.flat());
 }
 
-var rotate90 = function() {
+function rotate90() {
   if (!isSquare(puzzle)) return "puzzle is not square!";
-  grid = new Array(puzzle.size.width * puzzle.size.height);
-  for (let irow = 0; irow < puzzle.size.height; irow++)
-      for (let icol = 0; icol < puzzle.size.width; icol++)
-          grid[icol * puzzle.size.width + (puzzle.size.width - irow - 1)] = puzzle.grid[irow][icol].isBlock ? '.' : puzzle.grid[irow][icol].char;
-  puzzle.createGrid(grid);
+  grid = array2D(puzzle.size.height, puzzle.size.width);
+  mapGrid(grid, (r, c) => [c, puzzle.size.height - r - 1]);
+  puzzle.createGrid(grid.flat());
 }
 
-var rotate270 = function() {
+function rotate270() {
   if (!isSquare(puzzle)) return "puzzle is not square!";
   for (let i = 0; i < 3; ++i) rotate90();
 }
 
-var flipAcross = function() {
+function flipAcross() {
   grid = new Array(puzzle.size.width * puzzle.size.height);
   grid.fill('.');
   for (let i = 0; i < puzzle.acrossWords.length; ++i) {
@@ -62,7 +74,7 @@ var flipAcross = function() {
   puzzle.createGrid(grid);
 }
 
-var flipDown = function() {
+function flipDown() {
   grid = new Array(puzzle.size.width * puzzle.size.height);
   grid.fill('.');
   for (let i = 0; i < puzzle.downWords.length; ++i) {
@@ -85,7 +97,7 @@ const FLIP_FNS = new Map([
   ["D", flipDown]
 ]);
 
-var flip = function(dir) {
+function flip(dir) {
   if (!FLIP_FNS.has(dir)) {
     console.log(`unknown flip spec: ${dir}!`);
     return;
