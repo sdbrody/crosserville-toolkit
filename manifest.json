@@ -28,7 +28,8 @@
     {
       "js": [
         "src/interface.js",
-        "src/flips.js"
+        "src/flips.js",
+        "src/fill_tools.js"
       ],
       "matches": [
         "https://www.crosserville.com/builder"

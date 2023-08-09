@@ -3,13 +3,13 @@ function toolbarFocus() {
         activeTab.classList.remove("activeTab");
     }
     document.getElementById("id_toolbox_tab").classList.add("activeTab");
-    
+
     for (var activePane of document.getElementsByClassName("activePane")) {
         activePane.classList.remove("activePane");
     }
 
     let disable = !isSquare(puzzle);
-    for (var square_only_button of document.getElementsByClassName("button square_only")){
+    for (var square_only_button of document.getElementsByClassName("button square_only")) {
         square_only_button.disabled = disable;
     }
 
@@ -44,7 +44,9 @@ function insertToolbar(ext_base_url /* to be used for resources */ ) {
     for (let i = 0; i < control_tabs.length; ++i) {
         var observer = new MutationObserver(checkForActive);
         // children are list items containing a single div for the tab.
-        observer.observe(control_tabs[i].firstElementChild, {attributes: true});
+        observer.observe(control_tabs[i].firstElementChild, {
+            attributeFilter: ["class"]
+        });
         tab_observers.push(observer);
     };
 
@@ -61,11 +63,11 @@ function insertToolbar(ext_base_url /* to be used for resources */ ) {
     toolbox_tab.addEventListener("click", toolbarFocus);
     toolbox_li.appendChild(toolbox_tab);
     control_tabs_parent.appendChild(toolbox_li);
-    
+
     const toolbox_div = document.createElement("div");
     toolbox_div.classList.add("gridControlPane");
     toolbox_div.id = "id_toolbox_pane";
-    
+
     fetch(ext_base_url + "res/pane.html")
         .then(response => response.text())
         .then(data => {
@@ -79,9 +81,46 @@ function insertToolbar(ext_base_url /* to be used for resources */ ) {
 function removeToolbar() {
     document.getElementById("id_toolbox_li").remove();
     document.getElementById("id_toolbox_pane").remove();
-    tab_observers.forEach(function(ob) { ob.disconnect(); });
+    tab_observers.forEach(function(ob) {
+        ob.disconnect();
+    });
     // clear the array
-    tab_observers.length = 0; 
+    tab_observers.length = 0;
+}
+
+var fill_observer = undefined;
+
+function checkFillActive(mutationList) {
+    mutationList.forEach((mutation) => {
+        if (mutation.type === "attributes" && mutation.attributeName === "disabled") {
+            document.getElementById("id_acceptCurrentBtn").disabled = mutation.target.disabled;
+            return;
+        }
+    });
+}
+
+function insertFillTools(ext_base_url) {
+    const fill_tools_div = document.createElement("div");
+    fill_tools_div.classList.add("gridControlContainer");
+    fill_tools_div.id = "id_fillToolsContainer";
+    fetch(ext_base_url + "res/fill_tools.html ")
+        .then(response => response.text())
+        .then(data => {
+            fill_tools_div.innerHTML = data;
+            document.getElementById("id_slotOptionsContainer").before(fill_tools_div);
+        }).catch(err => {
+            // handle error
+        });
+    fill_observer = new MutationObserver(checkFillActive);
+    // children are list items containing a single div for the tab.
+    fill_observer.observe(document.getElementById("id_stopFillBtn"), {
+        attributeFilter: ["disabled"]
+    });    
+}
+
+function removeFillTools() {
+    document.getElementById("id_fillToolsContainer").remove();
+    fill_observer = undefined;
 }
 
 // Flag to indicate scripts have been installed.
