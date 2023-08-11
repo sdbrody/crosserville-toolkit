@@ -12,7 +12,8 @@ Upon clicking on the extension icon, a new 'Toolbox' tab is added to the Crosser
 - Flip grid horizontally, vertically, or diagonally.
 - Rotate grid 90 degrees clockwise or counter-clockwise.
 - Flip contents of across or down slots.
-
+- Button in Fill pane to accept all single options
+- Button in Fill pane to accept a single slot from a suggested fill
 
 ## Installation
 
